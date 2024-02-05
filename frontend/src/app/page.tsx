@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <>
       <NavbarComponent />
-      {/* <Unlogged /> */}
-      <Logged />
+      <Unlogged />
+      {/* <Logged /> */}
     </>
   );
 }

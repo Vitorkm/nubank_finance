@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import Image from "next/image";
 import {
   Navbar,
@@ -15,13 +15,15 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import Login from "./Login";
+import useNubankContext from "@/hooks/useNubankContext";
 
 export default function NavbarComponent() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const NuBank = useNubankContext();
 
   return (
     <Navbar>
-      <NavbarBrand>
+      <NavbarBrand onClick={() => console.log(NuBank.authState)}>
         <Image src="nu.svg" alt="nu" height={46} width={46} />
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
@@ -43,7 +45,7 @@ export default function NavbarComponent() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Dropdown placement="bottom-end">
+          {/* <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Button color="secondary" variant="shadow" endContent={
               <Avatar
@@ -69,11 +71,11 @@ export default function NavbarComponent() {
                 Log Out
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown>
-          {/* <Button onPress={onOpen} color="secondary" href="#" variant="flat">
+          </Dropdown> */}
+          <Button onPress={onOpen} color="secondary" href="#" variant="flat">
             Connect Account
           </Button>
-          <Login isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} /> */}
+          <Login isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} />
         </NavbarItem>
       </NavbarContent>
     </Navbar>
