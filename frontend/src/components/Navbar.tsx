@@ -1,4 +1,3 @@
-'use client'
 import Image from "next/image";
 import {
   Navbar,
@@ -12,18 +11,15 @@ import {
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
-  Avatar,
 } from "@nextui-org/react";
-import Login from "./Login";
-import useNubankContext from "@/hooks/useNubankContext";
+import Avatar from 'boring-avatars';
+import { ButtonLogin } from "./ButtonLogin";
 
 export default function NavbarComponent() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const NuBank = useNubankContext();
 
   return (
     <Navbar>
-      <NavbarBrand onClick={() => console.log(NuBank.authState)}>
+      <NavbarBrand>
         <Image src="nu.svg" alt="nu" height={46} width={46} />
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
@@ -45,16 +41,13 @@ export default function NavbarComponent() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          {/* <Dropdown placement="bottom-end">
+          <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Button color="secondary" variant="shadow" endContent={
               <Avatar
-                isBordered
-                className="transition-transform"
-                color="secondary"
+                variant="pixel"
                 name="Vitor Kretiska"
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                size={32}
               />}>
                 Vitor Kretiska
               </Button>
@@ -71,11 +64,10 @@ export default function NavbarComponent() {
                 Log Out
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown> */}
-          <Button onPress={onOpen} color="secondary" href="#" variant="flat">
+          </Dropdown>
+          {/* <ButtonLogin color="secondary" href="#" variant="flat">
             Connect Account
-          </Button>
-          <Login isOpen={isOpen} onOpen={onOpen} onOpenChange={onOpenChange} />
+          </ButtonLogin> */}
         </NavbarItem>
       </NavbarContent>
     </Navbar>

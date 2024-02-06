@@ -1,50 +1,40 @@
 'use client'
 import React from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Button} from "@nextui-org/react";
-import {useAsyncList} from "@react-stately/data";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
+import { useQuery } from "@tanstack/react-query";
+import { getExpenses } from "./Charts/TimeExpenses";
+
+interface TableProps {
+  amount: number;
+  category: string;
+  post_date: string;
+  title: string;
+  id: string;
+}
 
 export default function App() {
-  const [page, setPage] = React.useState(1);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  let list = useAsyncList({
-    async load({signal, cursor}) {
-      if (cursor) {
-        setPage((prev) => prev + 1);
-      }
-
-      // If no cursor is available, then we're loading the first page.
-      // Otherwise, the cursor is the next URL to load, as returned from the previous page.
-      const res = await fetch(cursor || "https://swapi.py4e.com/api/people/?search=", {signal});
-      let json = await res.json();
-
-      if (!cursor) {
-        setIsLoading(false);
-      }
-
-      return {
-        items: json.results,
-        cursor: json.next,
-      };
-    },
+  const { data, isLoading } = useQuery({
+    queryKey: ["timeExpenses"],
+    queryFn: getExpenses,
   });
 
-  const hasMore = page < 9;
+  const formatValue = (value: string | number, columKey: string) => { 
+    if (columKey === "post_date") {
+      return value.split("-").reverse().join("/");
+    }
+    if (columKey === "amount") {
+      return value / 100;
+    }
+    return value;
+  }
+
+
+
 
   return (
     <Table
       isHeaderSticky
       aria-label="Table clientside pagination"
-      bottomContent={
-        hasMore && !isLoading ? (
-          <div className="flex w-full justify-center">
-            <Button isDisabled={list.isLoading} color="secondary" variant="flat" onPress={list.loadMore}>
-              {list.isLoading && <Spinner color="secondary" size="sm" />}
-              Load More
-            </Button>
-          </div>
-        ) : null
-      }
       classNames={{
         base: "max-h-[520px]",
         table: "min-h-[450px]",
@@ -53,19 +43,19 @@ export default function App() {
       }}
     >
       <TableHeader>
-        <TableColumn key="name">Name</TableColumn>
-        <TableColumn key="height">Height</TableColumn>
-        <TableColumn key="mass">Mass</TableColumn>
-        <TableColumn key="birth_year">Birth year</TableColumn>
+        <TableColumn key="title">From</TableColumn>
+        <TableColumn key="category">Category</TableColumn>
+        <TableColumn key="post_date">Date</TableColumn>
+        <TableColumn key="amount">Price</TableColumn>
       </TableHeader>
       <TableBody
+        items={data?.bill?.line_items || []}
         isLoading={isLoading}
-        items={list.items}
         loadingContent={<Spinner className="text-purple-200" color="secondary" label="Loading..." />}
       >
-        {(item) => (
-          <TableRow key={item.name}>
-            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+        {(item: TableProps) => (
+          <TableRow key={item?.id}>
+            {(columnKey) => <TableCell>{formatValue(getKeyValue(item, columnKey), String(columnKey))}</TableCell>}
           </TableRow>
         )}
       </TableBody>
